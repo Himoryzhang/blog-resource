@@ -100,8 +100,8 @@ var rejectedThenable = {
 		reject("rejected state")
 	}
 }
-// Promise.reject(rejectedThenable) // Promise {<rejected>: {…}}
-// Promise.reject(rejectedThenable).catch( v => { console.log(v) }) // {then: ƒ}
+Promise.reject(rejectedThenable) // Promise {<rejected>: {…}}
+Promise.reject(rejectedThenable).catch( v => { console.log(v) }) // {then: ƒ}
 Promise.reject(rejectedThenable).catch( v => { v.then(()=>{}, res => { console.log(res) }) }) // rejected state
 ```
 
