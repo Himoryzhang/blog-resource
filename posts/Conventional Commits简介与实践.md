@@ -1,6 +1,6 @@
 ---
 title: Conventional Commit 简介与实践
-description: 本文介绍Conventional Commit
+description: 帮助你快速掌握 Conventional Commit 规范，并一步步完成 commitlint + husky 的工程化配置。
 pubDate: 2023-04-17 20:32:09
 ---
 ## 1. Conventional Commit是什么？

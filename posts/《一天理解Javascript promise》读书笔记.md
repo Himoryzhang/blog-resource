@@ -1,6 +1,6 @@
 ---
 title: 《一天理解 Javascript Promise》读书笔记
-description: 读书笔记。
+description: 梳理 Promise 生命周期、链式调用、多 Promise 协作与 async/await 等核心知识。
 pubDate: 2024-10-18 21:05:00
 ---
 
