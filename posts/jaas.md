@@ -18,14 +18,11 @@ pubDate: 2025-12-02 21:01:02
 具体代码见：https://github.com/Himoryzhang/joke-as-a-service
 
 ### 2. 部署镜像
-在部署方面，有两种方式。
-一种是传统的部署方式。
+部署方面采用docker容器化部署的方案。
 
-这里我使用了docker容器化部署的方案。
+选取docker是因为docker部署非常方便，不需要考虑服务器上是否安装相关依赖，只要有docker，就能部署。
 
-因为docker部署非常方便，我不需要考虑服务器上是否拥有必须的依赖，只要有docker，就能部署。
-
-### 1. 构建镜像
+#### 1. 构建镜像
 这里让cursor帮我们生成镜像的描述文件dockerfile，内容如下
 ```dockerfile
 # Use the official Node.js LTS Alpine image as the base image
@@ -55,45 +52,43 @@ CMD ["yarn", "start"]
 docker build --platform linux/amd64  -t jaas . 
 ```
 
-### 3. 上传镜像
-有几种可以将我们的镜像上传到服务器的方式。
-< docker官方提供的上传方式 >
+#### 2. 上传镜像
+我使用了比较传统的方式，手动将镜像传到云服务器。
 
-这里我使用了比较传统的方式，手动将镜像传到云服务器。
-#### 1. 将镜像打包为tar文件
+##### 1. 将镜像打包为tar文件
 ```bash
 docker save -o jaas.tar jaas:latest
 ```
 
-#### 2. 利用工具上传镜像至服务器
+##### 2. 利用工具上传镜像至服务器
 借助Termius其内置的sftp能力，将镜像上传到云服务器。
 
 
-### 4. 加载镜像
+#### 3. 加载镜像
 在运行镜像之前，需要将上传的image读取到docker中。
 
-#### 1. 加载镜像
+##### 1. 加载镜像
 ```bash
 docker load -i jaas.tar
 ```
 
-#### 2. 检查是否加载成功
+##### 2. 检查是否加载成功
 ```bash
 docker images
 ```
 如果image列表中有我们的镜像，则代表加载成功。
 
-### 5. 启动容器
+#### 4. 启动容器
 启动容器，从而运行jaas服务。
 
-#### 1. 启动容器，并且设置容器名称。
+##### 1. 启动容器，并且设置容器名称。
 ```bash
 docker run -d --name jaas -p 127.0.0.1:3000:3000 jaas:latest
 ```
 
 执行完毕启动容器的命令后，会返回一串字符串。
 
-#### 2. 检查是否启动成功
+##### 2. 检查是否启动成功
 可以使用curl命令检查api是否生效
 ```bash
 curl localhost:3000/joke
@@ -119,7 +114,7 @@ systemctl status nginx
 
 由于debian系统规定，`/etc/nginx/sites-available`中存放可用的站点信息，`/etc/nginx/sites-enabled`中存放启用的站点。站点无需编写两次，在`sites-available`下创建后，创建软链接至`sites-enabled`下即可。
 
-#### 1. 创建站点配置
+##### 1. 创建站点配置
 在`/etc/nginx/sites-available`下创建文件`<site_name>，内容如下
 ```conf
 server {
@@ -147,7 +142,7 @@ server {
 }
 ```
 
-#### 2. 重新启动服务以使配置生效
+##### 2. 重新启动服务以使配置生效
 ```bash
 systemctl restart nginx
 ```
@@ -156,7 +151,7 @@ systemctl restart nginx
 ```bash
 nginx -s reload
 ```
-#### 3. 检查是否生效
+##### 3. 检查是否生效
 在服务器上执行curl命令，检查是否生效
 ```
 curl -H "Host: <site_name>" http://127.0.0.1/joke/
@@ -165,7 +160,7 @@ curl -H "Host: <site_name>" http://127.0.0.1/joke/
 ```json
 "joke":"Why was the math book sad? It had too many problems.","explanation":"A 'problem' in a math book refers to math exercises, but it also means difficulties or troubles in general."}
 ```
-#### 4. 创建DNS记录
+#### 3. 创建DNS记录
 需要为域名创建A记录，解析至云服务器。至此部署完成，访问`<site_name>/joke`即可访问jaas服务。
 
 ## 未来可以提升的点
